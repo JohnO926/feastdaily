@@ -47,7 +47,7 @@ struct OnboardingView: View {
                 .font(.system(.body, design: .serif).italic()).multilineTextAlignment(.center)
                 .foregroundStyle(Theme.ink)
             Text(HonestyCopy.reference).font(.caption).foregroundStyle(Theme.muted)
-            Text("Once a day, at a random moment between 10:00 AM and 8:30 PM Mountain Time, an alarm goes off for everyone at once. Finish your reading before it does and the day is a feast.")
+            Text("Once a day, at a random moment, an alarm goes off for everyone at once. Finish your reading before it does and the day is a feast.")
                 .font(.callout).multilineTextAlignment(.center).foregroundStyle(Theme.muted)
             Spacer()
             Text("Feast Daily is an independent app and is not affiliated with any church.")
@@ -87,7 +87,7 @@ struct OnboardingView: View {
                     DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
                 }
             } footer: {
-                Text("A gentle nudge to read before the alarm window opens. There's no safe time to put it off.")
+                Text("A gentle nudge to read first thing. There's no safe time to put it off.")
             }
             if let issue = reminderIssue {
                 Text(issue).font(.caption).foregroundStyle(Theme.missed)

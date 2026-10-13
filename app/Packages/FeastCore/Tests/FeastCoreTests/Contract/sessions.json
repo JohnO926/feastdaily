@@ -32,12 +32,14 @@
    "window_end": "2026-10-14T04:30:00.000Z",
    "goal_seconds": 120,
    "verified_seconds": 140,
+   "verified_before_alarm_seconds": 140,
    "goal_reached_at": "2026-10-13T04:33:50.000Z",
    "self_reported_at": null,
    "alarm_at": null,
    "status": "safe"
   },
   "first_day_starts_at": "2026-10-13T04:30:00.000Z",
+  "pre_first_day_seconds": 0,
   "alarm": {
    "alarm_date": "2026-10-12",
    "fired": false,

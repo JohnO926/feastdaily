@@ -73,6 +73,16 @@ struct TodayStatusResolverTests {
         #expect(resolve(h, [], at: start).status == .notStarted)
     }
 
+    @Test func dayZeroKeepsSyncedReadingOnTheClock() {
+        // Synced day 0 slices are history only; the running total must not drop back to the unsynced part.
+        var h = home(verified: 0, status: .notStarted, firstDay: start.addingTimeInterval(3600))
+        h.preFirstDaySeconds = 165
+        let local = [LocalSessionSummary(source: .reader, activeSeconds: 20, endedAt: start)]
+        let r = resolve(h, local, at: start)
+        #expect(r.status == .notStarted)
+        #expect(r.verifiedSeconds == 185)
+    }
+
     @Test func staleCacheAfterRolloverShowsAFreshDay() {
         let local = [LocalSessionSummary(source: .reader, activeSeconds: 40, endedAt: end.addingTimeInterval(600))]
         let r = resolve(home(verified: 300, status: .safe), local, at: end.addingTimeInterval(3600))

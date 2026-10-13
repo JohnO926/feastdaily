@@ -56,8 +56,9 @@ public enum TodayStatusResolver {
                                 goalSeconds: fallbackGoalSeconds, alarmAt: nil, hasUnsynced: !unsynced.isEmpty)
         }
 
+        // Day 0 reading is history only (no day row), so the server reports it separately.
         if let first = home.firstDayStartsAt, now < first {
-            return TodayDisplay(status: .notStarted, verifiedSeconds: localTotal,
+            return TodayDisplay(status: .notStarted, verifiedSeconds: Double(home.preFirstDaySeconds ?? 0) + localTotal,
                                 goalSeconds: home.settings?.goalSeconds ?? fallbackGoalSeconds,
                                 alarmAt: nil, hasUnsynced: !unsynced.isEmpty)
         }

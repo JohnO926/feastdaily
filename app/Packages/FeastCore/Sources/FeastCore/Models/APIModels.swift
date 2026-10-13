@@ -149,6 +149,8 @@ public struct HomeStateDTO: Codable, Sendable, Equatable {
     public var settings: SettingsDTO?
     public var today: TodayDTO?
     public var firstDayStartsAt: Date?
+    /// Day 0 reading (before `firstDayStartsAt`), history only. Optional so older cached payloads still decode.
+    public var preFirstDaySeconds: Int?
     public var alarm: AlarmDTO?
     public var stats: StatsDTO
     public var missedMeals: [MissedMealDTO]
@@ -156,12 +158,13 @@ public struct HomeStateDTO: Codable, Sendable, Equatable {
     public var config: ConfigDTO
 
     public init(serverNow: Date, settings: SettingsDTO? = nil, today: TodayDTO? = nil, firstDayStartsAt: Date? = nil,
-                alarm: AlarmDTO? = nil, stats: StatsDTO = StatsDTO(), missedMeals: [MissedMealDTO] = [],
+                preFirstDaySeconds: Int? = nil, alarm: AlarmDTO? = nil, stats: StatsDTO = StatsDTO(), missedMeals: [MissedMealDTO] = [],
                 lastClosed: LastClosedDTO? = nil, config: ConfigDTO = ConfigDTO()) {
         self.serverNow = serverNow
         self.settings = settings
         self.today = today
         self.firstDayStartsAt = firstDayStartsAt
+        self.preFirstDaySeconds = preFirstDaySeconds
         self.alarm = alarm
         self.stats = stats
         self.missedMeals = missedMeals

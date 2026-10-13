@@ -72,8 +72,10 @@ final class AppModel {
         try? context.save()
     }
 
+    /// Where "Continue reading" goes: the saved position, else the start of the Book of Mormon.
     var resumeChapterId: Int? {
-        readingPosition?.chapterId ?? (try? scripture?.firstChapterId()) ?? nil
+        if let id = readingPosition?.chapterId { return id }
+        return (try? scripture?.firstChapterId(inVolume: "book-of-mormon")) ?? (try? scripture?.firstChapterId()) ?? nil
     }
 
     var resumeTitle: String? {

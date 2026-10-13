@@ -45,6 +45,48 @@ describe("HTTP flow (route handlers)", () => {
     vi.useRealTimers();
   });
 
+  it("day 0 reading is reported as pre_first_day_seconds until the first day starts", async () => {
+    at("2026-10-12T16:00:00.000Z");
+    const deviceId = randomUUID();
+    const secret = randomBytes(32).toString("hex");
+    const reg = await body(await register(call(null, "/api/v1/auth/register", "POST", { device_id: deviceId, device_secret: secret })));
+    const token = reg.json.token as string;
+    await onboarding(
+      call(token, "/api/v1/onboarding", "POST", {
+        tz: "America/Denver",
+        rollover_hour: 3,
+        goal_seconds: 600,
+        reminder_enabled: false,
+        reminder_local_time: null,
+      }),
+    );
+
+    const now = at("2026-10-12T16:10:00.000Z");
+    const dev = new FakeDevice(deviceId);
+    const s1 = dev.reading(new Date(now.getTime() - 5 * MIN), new Date(now.getTime() - 4 * MIN), 60);
+    const s2 = dev.reading(new Date(now.getTime() - 4 * MIN), new Date(now.getTime() - 3 * MIN), 45);
+    const env = dev.envelope(now);
+    const post = await body(
+      await sessions(
+        call(token, "/api/v1/sessions", "POST", {
+          ...env,
+          client_now_wall: env.client_now_wall.toISOString(),
+          sessions: [s1, s2].map((s) => ({
+            ...s,
+            started_at_wall: s.started_at_wall.toISOString(),
+            ended_at_wall: s.ended_at_wall.toISOString(),
+          })),
+        }),
+      ),
+    );
+    expect(post.json.results.map((r: { scored: boolean }) => r.scored)).toEqual([false, false]);
+    expect(post.json.home).toMatchObject({ pre_first_day_seconds: 105, today: { status: "not_started", verified_seconds: 0 } });
+
+    at("2026-10-13T13:00:00.000Z");
+    const h = await body(await home(call(token, "/api/v1/home", "GET")));
+    expect(h.json.pre_first_day_seconds).toBe(0);
+  });
+
   it("register -> onboarding -> two sessions crossing the goal -> GET /home is safe", async () => {
     at("2026-10-12T16:00:00.000Z");
     const deviceId = randomUUID();

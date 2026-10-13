@@ -109,7 +109,7 @@ struct HomeView: View {
             }
             return "Scoring starts at your next rollover."
         case .racing:
-            return "The alarm can go off any moment between 10:00 AM and 8:30 PM Mountain Time. Finish before it does."
+            return "The alarm could go off at any moment. Finish before it does."
         case .safe:
             return d.alarmAt == nil ? "You've feasted. When the alarm goes off, you'll get a quiet note instead." : "You beat the alarm today."
         case .missed:

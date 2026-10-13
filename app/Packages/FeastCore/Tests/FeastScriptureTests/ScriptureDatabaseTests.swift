@@ -43,6 +43,12 @@ struct ScriptureDatabaseTests {
         #expect(count == 10)
     }
 
+    @Test func firstChapterOfAVolume() throws {
+        let id = try #require(try db.firstChapterId(inVolume: "book-of-mormon"))
+        #expect(try db.location(chapterId: id)?.title == "2 Nephi 31")
+        #expect(try db.firstChapterId(inVolume: "nope") == nil)
+    }
+
     @Test func locationBuildsGospelLibraryLink() throws {
         let hit = try #require(try db.search("feast words christ").first { $0.reference == "2 Nephi 32:3" })
         let loc = try #require(try db.location(chapterId: hit.chapterId))

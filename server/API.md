@@ -174,6 +174,7 @@ Request: no body. Example response (onboarded user, day in progress, goal met):
     "status": "safe"
   },
   "first_day_starts_at": "2026-10-13T04:30:00.000Z",
+  "pre_first_day_seconds": 0,
   "alarm": {
     "alarm_date": "2026-10-12",
     "fired": false,
@@ -239,6 +240,7 @@ zeroed `stats`, `missed_meals: []`, `last_closed: null` (`alarm` and `config` ar
 | `today.alarm_at` | timestamp, *nullable* | The alarm instant that decides this day, set only after the shared alarm has fired. `null` while racing. |
 | `today.status` | enum | `not_started` / `racing` / `safe` / `missed` (see Enumerations). Show the self-report button only while `racing`. |
 | `first_day_starts_at` | timestamp, *nullable* | Start of the first scored day (the first rollover after onboarding). No alarm notifications before it. |
+| `pre_first_day_seconds` | integer | Verified reading between onboarding and `first_day_starts_at` (day 0). It is history only and never scored, but the reader shows it so the running total doesn't drop to 0 after each sync. `0` once the first day starts. |
 | `alarm` | object | Today's shared alarm (America/Denver date). Same shape as `GET /alarm/today`. |
 | `alarm.alarm_date` | alarm date | Denver calendar date. |
 | `alarm.fired` | boolean | The alarm has gone off. |
@@ -306,7 +308,7 @@ Response `200`:
     "reminder_local_time": "07:30"
   },
   "first_day_starts_at": "2026-10-13T09:00:00.000Z",
-  "home": { "server_now": "2026-10-12T16:00:00.000Z", "onboarded": true, "settings": { "tz": "America/Denver", "rollover_hour": 3, "goal_seconds": 600, "pending_goal_seconds": null, "reminder_enabled": true, "reminder_local_time": "07:30" }, "today": { "day_key": "2026-10-13", "window_start": "2026-10-13T09:00:00.000Z", "window_end": "2026-10-14T09:00:00.000Z", "goal_seconds": 600, "verified_seconds": 0, "verified_before_alarm_seconds": 0, "goal_reached_at": null, "self_reported_at": null, "alarm_at": null, "status": "not_started" }, "first_day_starts_at": "2026-10-13T09:00:00.000Z", "alarm": { "alarm_date": "2026-10-12", "fired": false, "fired_at": null, "beat_count": null, "reader_count": null, "beat_pct": null }, "stats": { "current_streak": 0, "longest_streak": 0, "total_feasts": 0, "active_missed_meals": 0, "famine": false, "restore_progress": 0 }, "missed_meals": [], "last_closed": null, "config": { "famine_threshold": 3, "missed_meal_expiry_days": 30, "feasts_to_restore": 4, "alarm_window": { "tz": "America/Denver", "start": "10:00", "end": "20:30" } } }
+  "home": { "server_now": "2026-10-12T16:00:00.000Z", "onboarded": true, "settings": { "tz": "America/Denver", "rollover_hour": 3, "goal_seconds": 600, "pending_goal_seconds": null, "reminder_enabled": true, "reminder_local_time": "07:30" }, "today": { "day_key": "2026-10-13", "window_start": "2026-10-13T09:00:00.000Z", "window_end": "2026-10-14T09:00:00.000Z", "goal_seconds": 600, "verified_seconds": 0, "verified_before_alarm_seconds": 0, "goal_reached_at": null, "self_reported_at": null, "alarm_at": null, "status": "not_started" }, "first_day_starts_at": "2026-10-13T09:00:00.000Z", "pre_first_day_seconds": 0, "alarm": { "alarm_date": "2026-10-12", "fired": false, "fired_at": null, "beat_count": null, "reader_count": null, "beat_pct": null }, "stats": { "current_streak": 0, "longest_streak": 0, "total_feasts": 0, "active_missed_meals": 0, "famine": false, "restore_progress": 0 }, "missed_meals": [], "last_closed": null, "config": { "famine_threshold": 3, "missed_meal_expiry_days": 30, "feasts_to_restore": 4, "alarm_window": { "tz": "America/Denver", "start": "10:00", "end": "20:30" } } }
 }
 ```
 

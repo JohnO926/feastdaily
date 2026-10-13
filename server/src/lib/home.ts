@@ -1,8 +1,8 @@
 // Client read model (B9): the GET /home payload. Active missed meals and famine are computed
 // here at read time from missed_meals and `now`; nothing time-dependent is stored.
-import { and, desc, eq, isNull, ne } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, lt, ne, sql } from "drizzle-orm";
 import type { Executor } from "@/db/client";
-import { dailyResults, missedMeals, userStats, type UserRow, type UserSettingsRow } from "@/db/schema";
+import { dailyResults, missedMeals, readingSessions, userStats, type UserRow, type UserSettingsRow } from "@/db/schema";
 import { alarmDateFor, publicAlarmFor, type PublicAlarm } from "./alarm";
 import type { ScoringConfig } from "./config";
 import { iso } from "./http";
@@ -37,6 +37,8 @@ export interface HomeDTO {
   settings: SettingsDTO | null;
   today: TodayDTO | null;
   first_day_starts_at: string | null;
+  /** Verified reading between onboarding and the first scored day (day 0). 0 once the first day starts. */
+  pre_first_day_seconds: number;
   alarm: PublicAlarm;
   stats: {
     current_streak: number;
@@ -73,6 +75,28 @@ export function settingsDTO(s: UserSettingsRow | null): SettingsDTO | null {
   };
 }
 
+/**
+ * Day 0 reading. Sessions before `first_day_starts_at` are history-only (no day row), so without this the
+ * reader's running total would drop to 0 every time a slice synced.
+ */
+async function preFirstDayTotal(ex: Executor, user: UserRow, now: Date): Promise<number> {
+  const first = user.firstDayStartsAt;
+  if (!first || !user.onboardedAt || now.getTime() >= first.getTime()) return 0;
+  const [row] = await ex
+    .select({ total: sql<number>`coalesce(sum(${readingSessions.activeSeconds}), 0)` })
+    .from(readingSessions)
+    .where(
+      and(
+        eq(readingSessions.userId, user.id),
+        eq(readingSessions.verified, true),
+        ne(readingSessions.source, "self_report"),
+        gte(readingSessions.serverStartAt, user.onboardedAt),
+        lt(readingSessions.serverStartAt, first),
+      ),
+    );
+  return Number(row?.total ?? 0);
+}
+
 export async function buildHome(
   ex: Executor,
   user: UserRow,
@@ -94,6 +118,7 @@ export async function buildHome(
     .orderBy(desc(dailyResults.dayKey))
     .limit(1);
   const alarm = await publicAlarmFor(ex, alarmDateFor(now, cfg));
+  const preFirstDaySeconds = await preFirstDayTotal(ex, user, now);
 
   let today: TodayDTO | null = null;
   if (pending) {
@@ -129,6 +154,7 @@ export async function buildHome(
     settings: settingsDTO(settings),
     today,
     first_day_starts_at: iso(user.firstDayStartsAt),
+    pre_first_day_seconds: preFirstDaySeconds,
     alarm,
     stats: {
       current_streak: stats?.currentStreak ?? 0,

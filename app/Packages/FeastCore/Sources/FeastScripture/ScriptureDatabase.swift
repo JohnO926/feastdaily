@@ -153,6 +153,16 @@ public final class ScriptureDatabase: Sendable {
         try queue.read { db in try Int.fetchOne(db, sql: "SELECT id FROM chapters ORDER BY sort LIMIT 1") }
     }
 
+    /// First chapter of a volume in canonical order, e.g. 1 Nephi 1 for `book-of-mormon`.
+    public func firstChapterId(inVolume slug: String) throws -> Int? {
+        try queue.read { db in
+            try Int.fetchOne(db, sql: """
+                SELECT c.id FROM chapters c JOIN books b ON b.id = c.book_id JOIN volumes v ON v.id = b.volume_id
+                WHERE v.slug = ? ORDER BY c.sort LIMIT 1
+                """, arguments: [slug])
+        }
+    }
+
     /// Full-text search over verse text. Every word must match (as a prefix), best matches first.
     public func search(_ query: String, limit: Int = 100) throws -> [SearchHit] {
         guard let pattern = FTS5Pattern(matchingAllPrefixesIn: query) else { return [] }
