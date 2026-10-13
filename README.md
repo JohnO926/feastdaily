@@ -67,3 +67,19 @@ branding.
 `make db` prints the verses changed in the 2013 edition for a manual spot check. The first run found that
 2 Nephi 4:23 still reads "night-time", although the source changelog lists it as corrected to "nighttime". Check
 the rest against the current edition before launch.
+
+## Deploying
+
+The API deploys from GitHub (`JohnO926/feastdaily`, branch `main`) to the Vercel project `feastdaily` in the
+HaydenProjects team, with root directory `server` and functions in `pdx1`, next to the Neon database
+(`solitary-bar-74422018`, us-west-2). Production deploys apply database migrations during the build.
+
+That Vercel account is kept in its own CLI config so it doesn't replace the default login:
+
+```sh
+vercel -Q ~/.config/vercel-feastdaily env ls      # run from server/
+```
+
+Environment variables on Vercel (production and preview): `DATABASE_URL` (Neon pooled), `DATABASE_URL_UNPOOLED`
+(Neon direct, used for migrations), `JWT_SECRET`, `CRON_SECRET`, `ADMIN_SECRET`, `APNS_DRY_RUN=true`,
+`APNS_BUNDLE_ID`. `DEV_REVEAL_ALARM` must stay unset in production.
