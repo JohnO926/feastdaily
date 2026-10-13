@@ -5,7 +5,8 @@ struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var step = 0
     @State private var goal = OnboardingView.preset("e2eGoal") ?? 300
-    @State private var rolloverHour = OnboardingView.preset("e2eRollover") ?? 3
+    /// Fixed at 3 AM; the server owns day windows. Overridable only by the live end-to-end test.
+    private let rolloverHour = OnboardingView.preset("e2eRollover") ?? AppModel.rolloverHour
     @State private var reminderOn = true
     @State private var reminderTime = Calendar.current.date(from: DateComponents(hour: 6, minute: 30)) ?? Date()
     @State private var submitting = false
@@ -75,19 +76,12 @@ struct OnboardingView: View {
     private var timingStep: some View {
         Form {
             Section {
-                Picker("New day starts at", selection: $rolloverHour) {
-                    ForEach(0...9, id: \.self) { h in Text(hourLabel(h)).tag(h) }
-                }
-            } footer: {
-                Text("Late-night reading counts for the day it belongs to. Most people keep 3 AM.")
-            }
-            Section {
                 Toggle("Morning reminder", isOn: $reminderOn)
                 if reminderOn {
                     DatePicker("Remind me at", selection: $reminderTime, displayedComponents: .hourAndMinute)
                 }
             } footer: {
-                Text("A gentle nudge to read first thing. There's no safe time to put it off.")
+                Text("A gentle nudge to read first thing. There's no safe time to put it off. Each new day starts at \(hourLabel(rolloverHour)), so late-night reading counts for the day it belongs to.")
             }
             if let issue = reminderIssue {
                 Text(issue).font(.caption).foregroundStyle(Theme.missed)

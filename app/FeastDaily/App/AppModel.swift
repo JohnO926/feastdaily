@@ -87,7 +87,7 @@ final class AppModel {
 
     var dayModel: DayModel {
         let tz = home?.settings.flatMap { TimeZone(identifier: $0.tz) } ?? .current
-        return DayModel(rolloverHour: home?.settings?.rolloverHour ?? 3, timeZone: tz)
+        return DayModel(rolloverHour: home?.settings?.rolloverHour ?? Self.rolloverHour, timeZone: tz)
     }
 
     var goalSeconds: Int { home?.today?.goalSeconds ?? home?.settings?.goalSeconds ?? 300 }
@@ -152,6 +152,9 @@ final class AppModel {
     }
 
     // MARK: Onboarding and settings
+
+    /// Local hour a new day starts. Not a user setting; existing accounts keep whatever the server has stored.
+    static let rolloverHour = 3
 
     func completeOnboarding(goalSeconds: Int, rolloverHour: Int, reminder: DateComponents?) async {
         let request = OnboardingRequestDTO(

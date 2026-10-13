@@ -20,12 +20,6 @@ struct SettingsView: View {
                     Text("Goal becomes \(ScoringDisplay.goalLabel(seconds: pending)) tomorrow. Today's finish line doesn't move.")
                         .font(.caption).foregroundStyle(Theme.muted)
                 }
-                Picker("New day starts at", selection: Binding(
-                    get: { settings?.rolloverHour ?? 3 },
-                    set: { v in Task { await model.updateSettings(SettingsPatchDTO(rolloverHour: v)) } }
-                )) {
-                    ForEach(0...9, id: \.self) { h in Text(hourLabel(h)).tag(h) }
-                }
             } header: { Text("Reading") }
 
             Section {
@@ -83,9 +77,5 @@ struct SettingsView: View {
         } message: {
             Text("Your streak, history and settings are removed from the server and this device. This can't be undone.")
         }
-    }
-
-    private func hourLabel(_ h: Int) -> String {
-        Calendar.current.date(from: DateComponents(hour: h))?.formatted(date: .omitted, time: .shortened) ?? "\(h):00"
     }
 }
