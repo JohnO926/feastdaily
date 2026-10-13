@@ -2,6 +2,8 @@
 DEVELOPMENT_TEAM =
 API_BASE_URL = http:/$()/localhost:3000
 ALARM_MODE = LOCAL_SIM
+// PersonalTeam (free account: no time-sensitive notifications) or Debug (paid Apple Developer Program).
+FD_DEBUG_ENTITLEMENTS = PersonalTeam
 TELEMETRYDECK_APP_ID =
 PRIVACY_POLICY_URL =
 #include? "Local.xcconfig"

@@ -39,7 +39,7 @@ targets:
         SUPPORTS_MACCATALYST: NO
       configs:
         Debug:
-          CODE_SIGN_ENTITLEMENTS: FeastDaily/FeastDaily.Debug.entitlements
+          CODE_SIGN_ENTITLEMENTS: FeastDaily/FeastDaily.$(FD_DEBUG_ENTITLEMENTS).entitlements
         Release:
           CODE_SIGN_ENTITLEMENTS: FeastDaily/FeastDaily.Release.entitlements
     info:

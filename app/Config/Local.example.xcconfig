@@ -5,6 +5,8 @@ DEVELOPMENT_TEAM = ABCDE12345
 API_BASE_URL = http:/$()/192.168.1.20:3000
 // LOCAL_SIM until the paid Apple Developer Program enables push; then PUSH.
 ALARM_MODE = LOCAL_SIM
+// Switch to Debug once on the paid team, to get time-sensitive alarm notifications.
+FD_DEBUG_ENTITLEMENTS = PersonalTeam
 // Optional analytics.
 TELEMETRYDECK_APP_ID =
 // Physical device UDID for `make install-device` (xcrun devicectl list devices).

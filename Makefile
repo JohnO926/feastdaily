@@ -63,7 +63,8 @@ shot:
 	mkdir -p shots && xcrun simctl io booted screenshot shots/$$(date +%Y%m%d-%H%M%S).png
 
 build-device: gen
-	set -o pipefail; xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination 'generic/platform=iOS' \
+	# Building against the device's id lets Xcode register it with the team and create the profiles.
+	set -o pipefail; xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination 'id=$(DEVICE_UDID)' \
 	  -derivedDataPath $(DERIVED) -allowProvisioningUpdates -allowProvisioningDeviceRegistration build $(XCB)
 
 install-device:
