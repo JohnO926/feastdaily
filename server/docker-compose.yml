@@ -1,0 +1,24 @@
+# Local Postgres for development and the DB test suite.
+# Host port defaults to 5433 (see .env.example). Override with FEAST_DB_PORT
+# when 5433 is already taken on your machine, e.g. `FEAST_DB_PORT=5434 docker compose up -d`.
+services:
+  db:
+    image: postgres:17
+    container_name: feast-daily-db
+    environment:
+      POSTGRES_USER: feast
+      POSTGRES_PASSWORD: feast
+      POSTGRES_DB: feast
+    ports:
+      - "${FEAST_DB_PORT:-5433}:5432"
+    volumes:
+      - feast-daily-pg:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U feast -d feast"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  feast-daily-pg:

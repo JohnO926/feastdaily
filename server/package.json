@@ -1,0 +1,46 @@
+{
+  "name": "feast-daily-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config vitest.config.mts",
+    "test:db": "vitest run --config vitest.db.config.mts",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:all": "npm test && npm run test:db && npm run test:integration",
+    "db:up": "docker compose up -d --wait",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file-if-exists=.env.local src/db/migrate.ts",
+    "check:fire-at": "bash scripts/check-fire-at.sh",
+    "prebuild": "bash scripts/check-fire-at.sh && node scripts/prebuild-migrate.mjs"
+  },
+  "dependencies": {
+    "apns2": "^12.2.0",
+    "drizzle-orm": "^0.45.4",
+    "jose": "^6.2.12",
+    "next": "16.4.0",
+    "pg": "^8.23.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "temporal-polyfill": "^1.0.5",
+    "workflow": "^5.2.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@workflow/vitest": "^5.0.4",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

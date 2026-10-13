@@ -1,0 +1,1 @@
+ALTER TABLE "device_boots" ADD COLUMN "last_contact_at" timestamp (3) with time zone;
