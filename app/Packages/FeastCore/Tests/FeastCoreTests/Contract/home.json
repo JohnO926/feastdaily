@@ -1,0 +1,52 @@
+{
+ "server_now": "2026-10-13T04:40:12.345Z",
+ "onboarded": true,
+ "settings": {
+  "tz": "Asia/Tehran",
+  "rollover_hour": 8,
+  "goal_seconds": 120,
+  "pending_goal_seconds": null,
+  "reminder_enabled": true,
+  "reminder_local_time": "08:30"
+ },
+ "today": {
+  "day_key": "2026-10-13",
+  "window_start": "2026-10-13T04:30:00.000Z",
+  "window_end": "2026-10-14T04:30:00.000Z",
+  "goal_seconds": 120,
+  "verified_seconds": 140,
+  "goal_reached_at": "2026-10-13T04:33:50.000Z",
+  "self_reported_at": null,
+  "alarm_at": null,
+  "status": "safe"
+ },
+ "first_day_starts_at": "2026-10-13T04:30:00.000Z",
+ "alarm": {
+  "alarm_date": "2026-10-12",
+  "fired": false,
+  "fired_at": null,
+  "beat_count": null,
+  "reader_count": null,
+  "beat_pct": null
+ },
+ "stats": {
+  "current_streak": 0,
+  "longest_streak": 0,
+  "total_feasts": 0,
+  "active_missed_meals": 0,
+  "famine": false,
+  "restore_progress": 0
+ },
+ "missed_meals": [],
+ "last_closed": null,
+ "config": {
+  "famine_threshold": 3,
+  "missed_meal_expiry_days": 30,
+  "feasts_to_restore": 4,
+  "alarm_window": {
+   "tz": "America/Denver",
+   "start": "10:00",
+   "end": "20:30"
+  }
+ }
+}

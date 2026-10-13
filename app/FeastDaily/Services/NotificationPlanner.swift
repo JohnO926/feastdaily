@@ -173,9 +173,9 @@ final class AlarmSource {
         if let r = revealed[date.description] { return r }
         if date == window.alarmDate(for: Date()), lastFetch.map({ Date().timeIntervalSince($0) > 300 }) ?? true {
             lastFetch = Date()
-            if let dev = try? await api.devTodayAlarm(), dev.alarmDate == date {
-                revealed[date.description] = dev.fireAt
-                return dev.fireAt
+            if let dev = try? await api.devTodayAlarm(), dev.alarmDate == date, let fireAt = dev.fireAt {
+                revealed[date.description] = fireAt
+                return fireAt
             }
         }
         var rng = DateSeededGenerator(seed: date.description)

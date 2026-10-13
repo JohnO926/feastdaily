@@ -95,7 +95,7 @@ final class AppModel {
     func start() async {
         closeOrphanedSessions()
         analytics.signal("app_open")
-        if BuildConfig.isUITesting {
+        if BuildConfig.isUITesting && BuildConfig.isOfflineTesting {
             if ProcessInfo.processInfo.arguments.contains("-skipOnboarding") {
                 localSettings.onboarded = true
                 phase = .ready
@@ -105,15 +105,24 @@ final class AppModel {
             }
             return
         }
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-resetIdentity") {
+            auth.reset()
+            await api.setToken(nil)
+        }
+        #endif
         await api.setReauthenticate { [auth, api] in try await auth.signIn(api: api) }
         do {
             if !(await api.hasToken) { _ = try await auth.signIn(api: api) }
+            // Unsynced sessions must be the first request after reconnecting: any other request counts as
+            // device contact, and sessions that ended before it would only count as history.
+            await syncSessions()
             let h = try await api.home()
             apply(home: h)
             // A reinstall keeps the Keychain identity, so the server may already know this user.
-            phase = h.settings != nil || localSettings.onboarded ? .ready : .onboarding
-            if h.settings != nil { localSettings.onboarded = true }
-            await syncSessions()
+            let onboarded = h.onboarded ?? (h.settings != nil)
+            phase = onboarded || localSettings.onboarded ? .ready : .onboarding
+            if onboarded { localSettings.onboarded = true }
             await afterStateChange()
         } catch {
             lastError = error.localizedDescription
@@ -125,12 +134,13 @@ final class AppModel {
         guard phase == .ready else { return }
         await refresh()
         await syncTimeZoneIfNeeded()
-        await syncSessions()
         await afterStateChange()
     }
 
+    /// Uploads pending sessions first (see `start()`), then fetches home.
     func refresh() async {
         guard !BuildConfig.isOfflineTesting else { return }
+        await syncSessions()
         do {
             apply(home: try await api.home())
             lastError = nil
@@ -146,7 +156,7 @@ final class AppModel {
             tz: TimeZone.current.identifier, rolloverHour: rolloverHour, goalSeconds: goalSeconds,
             reminderEnabled: reminder != nil, reminderLocalTime: reminder.map(Self.formatHM)
         )
-        if !BuildConfig.isUITesting {
+        if !BuildConfig.isOfflineTesting {
             do {
                 apply(home: try await api.onboarding(request))
             } catch {
@@ -164,6 +174,7 @@ final class AppModel {
     }
 
     func updateSettings(_ patch: SettingsPatchDTO) async {
+        await syncSessions()
         do {
             apply(home: try await api.patchSettings(patch))
             await afterStateChange()
@@ -314,7 +325,6 @@ final class AppModel {
     /// Called when the alarm notification arrives (local simulation or push).
     func alarmArrived(alarmDate: String?) async {
         analytics.signal("alarm_received", ["status": display.status.rawValue])
-        await syncSessions()
         await refresh()
         if let a = try? await api.alarmToday(), a.fired {
             alarmMoment = a
@@ -332,9 +342,11 @@ final class AppModel {
         try? context.save()
     }
 
-    /// Shows the shared moment once per alarm when the app opens after it fired.
+    /// Shows the shared moment once per alarm when the app opens after it fired, but only if that alarm
+    /// decided one of this user's days (not, say, an alarm that fired before their first scored day).
     func revealAlarmIfNeeded() {
-        guard let a = home?.alarm, a.fired, !localSettings.revealedAlarmDates.contains(a.alarmDate.description) else {
+        guard let a = home?.alarm, a.fired, home?.today?.alarmAt != nil,
+              !localSettings.revealedAlarmDates.contains(a.alarmDate.description) else {
             return
         }
         alarmMoment = a
@@ -354,6 +366,32 @@ final class AppModel {
         }
         recompute()
         revealAlarmIfNeeded()
+        scheduleBoundaryRefresh()
+    }
+
+    private var boundaryTask: Task<Void, Never>?
+
+    /// Refreshes right after the next instant that changes today's state (first scored day, rollover, the end
+    /// of the alarm window, or the alarm itself when known), so Home doesn't sit on a stale status while open.
+    private func scheduleBoundaryRefresh() {
+        boundaryTask?.cancel()
+        let now = self.now
+        var instants: [Date] = []
+        if let first = home?.firstDayStartsAt { instants.append(first) }
+        if let end = home?.today?.windowEnd { instants.append(end) }
+        if home?.alarm?.fired != true {
+            let window = home?.config.window ?? .standard
+            instants.append(window.interval(on: window.alarmDate(for: now)).end)
+            if let known = notifications.knownAlarmInstant { instants.append(known) }
+        }
+        guard let next = instants.filter({ $0 > now }).min() else { return }
+        let delay = min(next.timeIntervalSince(now) + 2, 6 * 3600)
+        boundaryTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled, let self else { return }
+            await self.refresh()
+            await self.afterStateChange()
+        }
     }
 
     private func loadCachedHome() {

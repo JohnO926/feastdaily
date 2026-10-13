@@ -74,8 +74,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
             #else
             let environment = "production"
             #endif
-            try? await model.api.registerDevice(deviceId: model.auth.identity().deviceId, token: token,
-                                                environment: environment)
+            _ = try? await model.api.registerDevice(token: token, environment: environment)
         }
     }
 

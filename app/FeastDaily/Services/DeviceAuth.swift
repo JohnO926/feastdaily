@@ -28,7 +28,7 @@ struct DeviceAuth: Sendable {
         }
         var bytes = [UInt8](repeating: 0, count: 32)
         _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        let identity = Identity(deviceId: UUID(), secret: Data(bytes).base64EncodedString())
+        let identity = Identity(deviceId: UUID(), secret: bytes.map { String(format: "%02x", $0) }.joined())
         keychain.write(.deviceIdentity, "\(identity.deviceId.uuidString):\(identity.secret)")
         return identity
     }

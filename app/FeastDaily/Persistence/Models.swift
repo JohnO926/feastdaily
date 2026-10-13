@@ -105,7 +105,7 @@ final class DailyResultCache {
     init(_ dto: HistoryDayDTO) {
         dayKey = dto.dayKey.description
         resultRaw = dto.result?.rawValue
-        verifiedSeconds = dto.verifiedSeconds
+        verifiedSeconds = dto.totalSeconds
         selfReported = dto.selfReported
         alarmAt = dto.alarmAt
         goalSeconds = dto.goalSeconds
@@ -114,7 +114,7 @@ final class DailyResultCache {
 
     func update(_ dto: HistoryDayDTO) {
         resultRaw = dto.result?.rawValue
-        verifiedSeconds = dto.verifiedSeconds
+        verifiedSeconds = dto.totalSeconds
         selfReported = dto.selfReported
         alarmAt = dto.alarmAt
         goalSeconds = dto.goalSeconds

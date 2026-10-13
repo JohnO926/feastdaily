@@ -41,7 +41,6 @@ struct HomeView: View {
             }
             .navigationDestination(for: Route.self, destination: destination)
             .refreshable {
-                await model.syncSessions()
                 await model.refresh()
                 await model.afterStateChange()
             }

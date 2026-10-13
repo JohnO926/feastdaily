@@ -17,7 +17,7 @@ let package = Package(
             name: "FeastScripture",
             dependencies: ["FeastCore", .product(name: "GRDB", package: "GRDB.swift")]
         ),
-        .testTarget(name: "FeastCoreTests", dependencies: ["FeastCore"]),
+        .testTarget(name: "FeastCoreTests", dependencies: ["FeastCore"], resources: [.copy("Contract")]),
         .testTarget(
             name: "FeastScriptureTests",
             dependencies: ["FeastScripture"],

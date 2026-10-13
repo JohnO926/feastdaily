@@ -143,6 +143,7 @@ struct HistoryView: View {
         let last = first.adding(days: 31)
         loading = true
         defer { loading = false }
+        await model.syncSessions()
         guard let history = try? await model.api.history(from: first, to: last) else { return }
         let byKey = Dictionary(uniqueKeysWithValues: cached.map { ($0.dayKey, $0) })
         for d in history.days {

@@ -24,6 +24,8 @@ actor APIClient {
     private let keychain: Keychain
     private var token: String?
     private var reauthenticate: (@Sendable () async throws -> String)?
+    private let mono = SystemMonotonicClock()
+    private let bootId = BootSession.identifier()
 
     init(baseURL: URL = BuildConfig.apiBaseURL, keychain: Keychain = Keychain(), timeout: TimeInterval = 15) {
         self.baseURL = baseURL
@@ -83,10 +85,11 @@ actor APIClient {
         try await send("GET", "/api/v1/dev/today-alarm")
     }
 
-    func registerDevice(deviceId: UUID, token pushToken: String, environment: String) async throws {
-        struct Body: Encodable { let deviceId: UUID; let token: String; let environment: String }
-        let _: EmptyResponse = try await send("POST", "/api/v1/devices",
-                                              body: Body(deviceId: deviceId, token: pushToken, environment: environment))
+    func registerDevice(token pushToken: String, environment: String) async throws -> HomeStateDTO {
+        struct Body: Encodable { let token: String; let environment: String }
+        let r: HomeEnvelopeDTO = try await send("POST", "/api/v1/devices",
+                                                body: Body(token: pushToken, environment: environment))
+        return r.home
     }
 
     func deleteAccount() async throws {
@@ -116,6 +119,9 @@ actor APIClient {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
         if authorized, let token { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
+        // Lets the server refine this boot's monotonic anchor on every request.
+        request.setValue(bootId, forHTTPHeaderField: "X-Feast-Boot-Id")
+        request.setValue(String(mono.nowMilliseconds()), forHTTPHeaderField: "X-Feast-Mono-Ms")
 
         let data: Data
         let response: URLResponse

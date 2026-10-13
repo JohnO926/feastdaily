@@ -1,0 +1,100 @@
+{
+ "from": "2026-10-12",
+ "to": "2026-10-15",
+ "days": [
+  {
+   "day_key": "2026-10-12",
+   "result": null,
+   "window_start": null,
+   "window_end": null,
+   "goal_seconds": null,
+   "verified_seconds": 0,
+   "total_seconds": 300,
+   "goal_reached_at": null,
+   "self_reported_at": null,
+   "alarm_at": null,
+   "rescored": false,
+   "sessions": [
+    {
+     "id": "5e4d3c2b-1a0f-4e9d-8c7b-6a5f4e3d2c1b",
+     "session_id": "5e4d3c2b-1a0f-4e9d-8c7b-6a5f4e3d2c1b",
+     "source": "reader",
+     "server_start_at": "2026-10-12T17:00:00.000Z",
+     "server_end_at": "2026-10-12T17:06:00.000Z",
+     "active_seconds": 300,
+     "scorable": true,
+     "scored": false,
+     "reason": null,
+     "content_ref": "bom/1-ne/1"
+    }
+   ]
+  },
+  {
+   "day_key": "2026-10-13",
+   "result": "feast",
+   "window_start": "2026-10-13T09:00:00.000Z",
+   "window_end": "2026-10-14T09:00:00.000Z",
+   "goal_seconds": 600,
+   "verified_seconds": 660,
+   "total_seconds": 660,
+   "goal_reached_at": "2026-10-13T12:54:54.545Z",
+   "self_reported_at": null,
+   "alarm_at": "2026-10-13T20:47:00.000Z",
+   "rescored": false,
+   "sessions": [
+    {
+     "id": "6f1d3c2b-8a7e-4b5c-9d0e-1f2a3b4c5d6e",
+     "session_id": "6f1d3c2b-8a7e-4b5c-9d0e-1f2a3b4c5d6e",
+     "source": "reader",
+     "server_start_at": "2026-10-13T12:00:00.000Z",
+     "server_end_at": "2026-10-13T12:06:00.000Z",
+     "active_seconds": 330,
+     "scorable": true,
+     "scored": true,
+     "reason": null,
+     "content_ref": "bom/1-ne/1"
+    },
+    {
+     "id": "7a6b5c4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d",
+     "session_id": "7a6b5c4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d",
+     "source": "reader",
+     "server_start_at": "2026-10-13T12:50:00.000Z",
+     "server_end_at": "2026-10-13T12:56:00.000Z",
+     "active_seconds": 330,
+     "scorable": true,
+     "scored": true,
+     "reason": null,
+     "content_ref": "bom/1-ne/2"
+    }
+   ]
+  },
+  {
+   "day_key": "2026-10-14",
+   "result": "missed",
+   "window_start": "2026-10-14T09:00:00.000Z",
+   "window_end": "2026-10-15T09:00:00.000Z",
+   "goal_seconds": 900,
+   "verified_seconds": 0,
+   "total_seconds": 0,
+   "goal_reached_at": null,
+   "self_reported_at": null,
+   "alarm_at": "2026-10-14T23:02:11.000Z",
+   "rescored": false,
+   "sessions": []
+  },
+  {
+   "day_key": "2026-10-15",
+   "result": "pending",
+   "window_start": "2026-10-15T09:00:00.000Z",
+   "window_end": "2026-10-16T09:00:00.000Z",
+   "goal_seconds": 900,
+   "verified_seconds": 0,
+   "total_seconds": 0,
+   "goal_reached_at": null,
+   "self_reported_at": null,
+   "alarm_at": null,
+   "rescored": false,
+   "sessions": []
+  }
+ ]
+}

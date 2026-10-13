@@ -4,8 +4,8 @@ import FeastCore
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var step = 0
-    @State private var goal = 300
-    @State private var rolloverHour = 3
+    @State private var goal = OnboardingView.preset("e2eGoal") ?? 300
+    @State private var rolloverHour = OnboardingView.preset("e2eRollover") ?? 3
     @State private var reminderOn = true
     @State private var reminderTime = Calendar.current.date(from: DateComponents(hour: 6, minute: 30)) ?? Date()
     @State private var submitting = false
@@ -103,6 +103,16 @@ struct OnboardingView: View {
     private var reminderIssue: String? {
         guard let c = reminderComponents, let h = c.hour else { return nil }
         return h < rolloverHour ? "The reminder has to be after the new day starts (\(hourLabel(rolloverHour)))." : nil
+    }
+
+    /// Debug-only presets for the live end-to-end UI test (`-e2eGoal 45 -e2eRollover 8`).
+    static func preset(_ key: String) -> Int? {
+        #if DEBUG
+        let v = UserDefaults.standard.integer(forKey: key)
+        return UserDefaults.standard.object(forKey: key) == nil ? nil : v
+        #else
+        return nil
+        #endif
     }
 
     private func hourLabel(_ h: Int) -> String {

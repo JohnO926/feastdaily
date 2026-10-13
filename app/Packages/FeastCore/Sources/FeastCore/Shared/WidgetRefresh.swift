@@ -50,6 +50,9 @@ public enum WidgetHomeFetcher {
         var request = URLRequest(url: baseURL.appendingPathComponent("/api/v1/home"), timeoutInterval: timeout)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        // A background fetch must not count as device contact, or it would turn the app's unsynced offline
+        // sessions into "backdated" ones.
+        request.setValue("1", forHTTPHeaderField: "X-Feast-Passive")
         guard let (data, response) = try? await URLSession.shared.data(for: request),
               (response as? HTTPURLResponse)?.statusCode == 200 else { return nil }
         return try? FeastJSON.decoder().decode(HomeStateDTO.self, from: data)

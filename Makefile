@@ -12,10 +12,11 @@ BUNDLE_ID    := com.valiflo.feastdaily
 DEVICE_UDID  ?= $(shell sed -n 's/^DEVICE_UDID *= *//p' app/Config/Local.xcconfig 2>/dev/null)
 XCB          := $(shell command -v xcbeautify >/dev/null && echo "| xcbeautify" || echo "")
 
-.PHONY: help db gen build-sim run-sim shot build-device install-device test-core test-app test server-dev server-test clean
+.PHONY: help db contract e2e gen build-sim run-sim shot build-device install-device test-core test-app test server-dev server-test clean
 
 help:
 	@echo "db             Build the scripture SQLite from the JSON submodule"
+	@echo "contract       Refresh Swift contract fixtures from server/API.md"
 	@echo "gen            Generate the Xcode project (XcodeGen)"
 	@echo "build-sim      Build for the $(SIM_NAME) simulator"
 	@echo "run-sim        Build, install and launch on the simulator"
@@ -26,11 +27,16 @@ help:
 	@echo "test-app       App unit and UI tests on the simulator"
 	@echo "server-dev     Start Postgres and the API dev server"
 	@echo "server-test    Backend unit and DB tests"
+	@echo "e2e            Live UI test against a running server (API_BASE_URL); waits for a near rollover"
 
 db:
 	python3 -I tools/build_scriptures_db.py tools/data/scriptures-json app/FeastDaily/Resources/scriptures.sqlite --spot-check
 	python3 -I tools/build_scriptures_db.py tools/fixtures/mini-scriptures tools/fixtures/mini.sqlite
 	cp tools/fixtures/mini.sqlite app/Packages/FeastCore/Tests/FeastScriptureTests/Fixtures/mini.sqlite
+
+# Refresh the Swift contract-test fixtures from the examples in server/API.md.
+contract:
+	python3 -I tools/extract_contract.py server/API.md app/Packages/FeastCore/Tests/FeastCoreTests/Contract
 
 app/Config/Local.xcconfig:
 	cp app/Config/Local.example.xcconfig app/Config/Local.xcconfig
@@ -68,6 +74,15 @@ test-app: gen
 	  -derivedDataPath $(DERIVED) CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test $(XCB)
 
 test: test-core test-app server-test
+
+# Live end-to-end: onboard a fresh user in a time zone whose rollover is minutes away, read past a 45 s goal,
+# and check Home turns Safe from server state. Needs `make server-dev` (or another server) at API_BASE_URL.
+e2e: gen
+	set -- $$(python3 -I tools/e2e_timezone.py 120 2400); echo "time zone $$1, rollover $$2:00, in $$3 s"; \
+	TEST_RUNNER_FEAST_E2E=1 TEST_RUNNER_E2E_TZ=$$1 TEST_RUNNER_E2E_ROLLOVER=$$2 TEST_RUNNER_E2E_WAIT_SECONDS=$$3 \
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -destination '$(SIM_DEST)' -derivedDataPath $(DERIVED) \
+	  CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= \
+	  -only-testing:FeastDailyUITests/LiveEndToEndTests test $(XCB)
 
 server-dev:
 	cd server && docker compose up -d && npm run dev

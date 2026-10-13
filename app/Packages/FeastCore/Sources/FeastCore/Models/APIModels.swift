@@ -145,6 +145,7 @@ public struct ConfigDTO: Codable, Sendable, Equatable {
 /// `GET /api/v1/home`.
 public struct HomeStateDTO: Codable, Sendable, Equatable {
     public var serverNow: Date
+    public var onboarded: Bool?
     public var settings: SettingsDTO?
     public var today: TodayDTO?
     public var firstDayStartsAt: Date?
@@ -172,15 +173,39 @@ public struct HomeStateDTO: Codable, Sendable, Equatable {
 /// One day in `GET /api/v1/history`.
 public struct HistoryDayDTO: Codable, Sendable, Equatable, Identifiable {
     public var dayKey: DayKey
+    /// `nil` for a day with history-only reading and no scored window.
     public var result: DayResult?
-    public var verifiedSeconds: Int
-    public var selfReported: Bool
-    public var alarmAt: Date?
+    public var windowStart: Date?
+    public var windowEnd: Date?
     public var goalSeconds: Int?
+    public var verifiedSeconds: Int
+    /// All verified reading filed under the day, including history-only pieces. Use for "minutes read".
+    public var totalSeconds: Int
+    public var goalReachedAt: Date?
+    public var selfReportedAt: Date?
+    public var alarmAt: Date?
+    public var rescored: Bool?
+    public var sessions: [HistorySessionDTO]?
     public var id: DayKey { dayKey }
+    public var selfReported: Bool { selfReportedAt != nil }
+}
+
+public struct HistorySessionDTO: Codable, Sendable, Equatable, Identifiable {
+    public var id: UUID
+    public var sessionId: UUID
+    public var source: SessionSource
+    public var serverStartAt: Date
+    public var serverEndAt: Date
+    public var activeSeconds: Int
+    public var scorable: Bool
+    public var scored: Bool
+    public var reason: String?
+    public var contentRef: String?
 }
 
 public struct HistoryDTO: Codable, Sendable, Equatable {
+    public var from: DayKey?
+    public var to: DayKey?
     public var days: [HistoryDayDTO]
 }
 
@@ -293,9 +318,11 @@ public struct HomeEnvelopeDTO: Codable, Sendable {
     public var home: HomeStateDTO
 }
 
+/// `GET /api/v1/dev/today-alarm`. `fire_at` is `nil` until the server picks today's alarm (~15:00 UTC).
 public struct DevAlarmDTO: Codable, Sendable {
     public var alarmDate: DayKey
-    public var fireAt: Date
+    public var fireAt: Date?
+    public var firedAt: Date?
 }
 
 /// JSON coding configured for the Feast Daily API.
