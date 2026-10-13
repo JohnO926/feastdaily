@@ -28,7 +28,7 @@ make db             # rebuild app/FeastDaily/Resources/scriptures.sqlite and pri
 make test-core      # FeastCore + FeastScripture tests
 make run-sim        # build, install and launch on the iPhone 18 Pro simulator
 make test-app       # app unit and UI smoke tests
-make server-dev     # Postgres in Docker + API on http://localhost:3000
+make server-dev     # Postgres in Docker (port 5436) + API on http://localhost:3001
 make server-test    # backend unit and DB tests
 ```
 

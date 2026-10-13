@@ -10,6 +10,10 @@ SIM_NAME     ?= iPhone 18 Pro
 SIM_DEST     := platform=iOS Simulator,name=$(SIM_NAME)
 BUNDLE_ID    := com.valiflo.feastdaily
 DEVICE_UDID  ?= $(shell sed -n 's/^DEVICE_UDID *= *//p' app/Config/Local.xcconfig 2>/dev/null)
+# Ports 3000 and 5433 are taken by other projects on this Mac; server/.env.local matches these.
+API_PORT     ?= 3001
+FEAST_DB_PORT ?= 5436
+export FEAST_DB_PORT
 XCB          := $(shell command -v xcbeautify >/dev/null && echo "| xcbeautify" || echo "")
 
 .PHONY: help db contract e2e gen build-sim run-sim shot build-device install-device test-core test-app test server-dev server-test clean
@@ -85,7 +89,7 @@ e2e: gen
 	  -only-testing:FeastDailyUITests/LiveEndToEndTests test $(XCB)
 
 server-dev:
-	cd server && docker compose up -d && npm run dev
+	cd server && docker compose up -d && npx next dev -p $(API_PORT)
 
 server-test:
 	cd server && docker compose up -d && npm test && npm run test:db
