@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.application-groups</key>
+	<array><string>group.com.valiflo.feastdaily</string></array>
+	<key>keychain-access-groups</key>
+	<array><string>$(AppIdentifierPrefix)com.valiflo.feastdaily.shared</string></array>
+	<key>com.apple.developer.usernotifications.time-sensitive</key>
+	<true/>
+	<!-- Push needs the paid Apple Developer Program; a Personal Team profile cannot carry this. -->
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

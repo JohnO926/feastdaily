@@ -1,0 +1,7 @@
+// Shared build settings. Local.xcconfig (gitignored) overrides DEVELOPMENT_TEAM and API_BASE_URL.
+DEVELOPMENT_TEAM =
+API_BASE_URL = http:/$()/localhost:3000
+ALARM_MODE = LOCAL_SIM
+TELEMETRYDECK_APP_ID =
+PRIVACY_POLICY_URL =
+#include? "Local.xcconfig"

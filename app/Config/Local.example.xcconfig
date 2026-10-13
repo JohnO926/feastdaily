@@ -1,0 +1,11 @@
+// Copy to Local.xcconfig (gitignored) and fill in.
+// Personal Team ID: Xcode > Settings > Accounts > your Apple ID > team (10 characters).
+DEVELOPMENT_TEAM = ABCDE12345
+// Simulator: http://localhost:3000. Physical iPhone: your Mac's LAN address or a Vercel preview URL.
+API_BASE_URL = http:/$()/192.168.1.20:3000
+// LOCAL_SIM until the paid Apple Developer Program enables push; then PUSH.
+ALARM_MODE = LOCAL_SIM
+// Optional analytics.
+TELEMETRYDECK_APP_ID =
+// Physical device UDID for `make install-device` (xcrun devicectl list devices).
+DEVICE_UDID = 00008150-00052D003A40401C

@@ -1,0 +1,56 @@
+{
+ "lds_slug": "pgp",
+ "title": "The Pearl of Great Price",
+ "version": 4,
+ "books": [
+  {
+   "book": "Moses",
+   "chapters": [
+    {
+     "chapter": 1,
+     "reference": "Moses 1",
+     "verses": [
+      {
+       "reference": "Moses 1:1",
+       "text": "The words of God, which he spake unto Moses at a time when Moses was caught up into an exceedingly high mountain,",
+       "verse": 1
+      },
+      {
+       "reference": "Moses 1:2",
+       "text": "And he saw God face to face, and he talked with him, and the glory of God was upon Moses; therefore Moses could endure his presence.",
+       "verse": 2
+      },
+      {
+       "reference": "Moses 1:3",
+       "text": "And God spake unto Moses, saying: Behold, I am the Lord God Almighty, and Endless is my name; for I am without beginning of days or end of years; and is not this endless?",
+       "verse": 3
+      }
+     ]
+    },
+    {
+     "chapter": 2,
+     "reference": "Moses 2",
+     "verses": [
+      {
+       "reference": "Moses 2:1",
+       "text": "And it came to pass that the Lord spake unto Moses, saying: Behold, I reveal unto you concerning this heaven, and this earth; write the words which I speak. I am the Beginning and the End, the Almighty God; by mine Only Begotten I created these things; yea, in the beginning I created the heaven, and the earth upon which thou standest.",
+       "verse": 1
+      },
+      {
+       "reference": "Moses 2:2",
+       "text": "And the earth was without form, and void; and I caused darkness to come up upon the face of the deep; and my Spirit moved upon the face of the water; for I am God.",
+       "verse": 2
+      },
+      {
+       "reference": "Moses 2:3",
+       "text": "And I, God, said: Let there be light; and there was light.",
+       "verse": 3
+      }
+     ]
+    }
+   ],
+   "full_title": "Selections from the Book of Moses",
+   "lds_slug": "moses"
+  }
+ ]
+}

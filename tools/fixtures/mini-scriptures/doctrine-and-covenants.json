@@ -1,0 +1,49 @@
+{
+ "lds_slug": "dc-testament/dc",
+ "title": "The Doctrine and Covenants",
+ "version": 5,
+ "sections": [
+  {
+   "section": 1,
+   "reference": "D&C 1",
+   "verses": [
+    {
+     "reference": "D&C 1:1",
+     "text": "Hearken, O ye people of my church, saith the voice of him who dwells on high, and whose eyes are upon all men; yea, verily I say: Hearken ye people from afar; and ye that are upon the islands of the sea, listen together.",
+     "verse": 1
+    },
+    {
+     "reference": "D&C 1:2",
+     "text": "For verily the voice of the Lord is unto all men, and there is none to escape; and there is no eye that shall not see, neither ear that shall not hear, neither heart that shall not be penetrated.",
+     "verse": 2
+    },
+    {
+     "reference": "D&C 1:3",
+     "text": "And the rebellious shall be pierced with much sorrow; for their iniquities shall be spoken upon the housetops, and their secret acts shall be revealed.",
+     "verse": 3
+    }
+   ]
+  },
+  {
+   "section": 2,
+   "reference": "D&C 2",
+   "verses": [
+    {
+     "reference": "D&C 2:1",
+     "text": "Behold, I will reveal unto you the Priesthood, by the hand of Elijah the prophet, before the coming of the great and dreadful day of the Lord.",
+     "verse": 1
+    },
+    {
+     "reference": "D&C 2:2",
+     "text": "And he shall plant in the hearts of the children the promises made to the fathers, and the hearts of the children shall turn to their fathers.",
+     "verse": 2
+    },
+    {
+     "reference": "D&C 2:3",
+     "text": "If it were not so, the whole earth would be utterly wasted at his coming.",
+     "verse": 3
+    }
+   ]
+  }
+ ]
+}
