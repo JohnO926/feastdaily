@@ -157,11 +157,12 @@ final class NotificationPlanner {
     private var lastKinds: [String: PlannedNotification.Kind] = [:]
 }
 
-/// Where the simulated alarm time comes from on the free tier.
+/// Where the simulated alarm time comes from on the free tier (no push).
 ///
-/// In development the server reveals the real secret time (`DEV_REVEAL_ALARM=true`), so the local notification
-/// fires at the instant the server scores against. Otherwise a deterministic random time per date is used, so
-/// reconciling repeatedly doesn't move it.
+/// Only a development server reveals the real secret time (`DEV_REVEAL_ALARM=true`); then the local notification
+/// fires at the instant the server scores against. Otherwise no alarm notification is scheduled: a made-up time
+/// would announce an alarm that hadn't happened. The server still enforces the real alarm, and the app shows the
+/// result (and the shared moment) the next time it opens.
 @MainActor
 final class AlarmSource {
     private var revealed: [String: Date] = [:]
@@ -178,24 +179,6 @@ final class AlarmSource {
                 return fireAt
             }
         }
-        var rng = DateSeededGenerator(seed: date.description)
-        return window.randomInstant(on: date, using: &rng)
-    }
-}
-
-/// Deterministic generator seeded from a string (FNV-1a + SplitMix64).
-struct DateSeededGenerator: RandomNumberGenerator {
-    var state: UInt64
-    init(seed: String) {
-        var h: UInt64 = 0xcbf2_9ce4_8422_2325
-        for b in seed.utf8 { h = (h ^ UInt64(b)) &* 0x100_0000_01b3 }
-        state = h
-    }
-    mutating func next() -> UInt64 {
-        state &+= 0x9E37_79B9_7F4A_7C15
-        var z = state
-        z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
-        z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
-        return z ^ (z >> 31)
+        return nil
     }
 }

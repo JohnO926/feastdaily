@@ -97,14 +97,6 @@ final class NotificationPlannerTests: XCTestCase {
         await planner.apply([NotificationPlanner.alarmNotification(date: "2030-01-01", at: at, safe: true)])
         XCTAssertEqual(center.added.count, unchanged, "An unchanged plan is a no-op")
     }
-
-    func testDeterministicLocalAlarm() {
-        var a = DateSeededGenerator(seed: "2026-10-12")
-        var b = DateSeededGenerator(seed: "2026-10-12")
-        let key = DayKey("2026-10-12")!
-        XCTAssertEqual(AlarmWindow.standard.randomInstant(on: key, using: &a),
-                       AlarmWindow.standard.randomInstant(on: key, using: &b))
-    }
 }
 
 final class PaginatorTests: XCTestCase {

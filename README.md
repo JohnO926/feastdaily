@@ -46,8 +46,13 @@ Desktop, and iCloud tags files with extended attributes that make codesign fail.
 Free-tier builds expire after 7 days. Rebuild and reinstall weekly.
 
 Without the paid Apple Developer Program there is no push, so the daily alarm is simulated with a local
-notification (`ALARM_MODE = LOCAL_SIM`). With the server's `DEV_REVEAL_ALARM=true`, the app schedules that local
-notification at the real secret time, so it fires at the instant the server scores against.
+notification (`ALARM_MODE = LOCAL_SIM`), and only against a development server with `DEV_REVEAL_ALARM=true`, which
+reveals the real secret time so the notification fires at the instant the server scores against. Against
+production there is no alarm notification until push is enabled; the server still enforces the alarm and the app
+shows the result when it next opens.
+
+Production API: `https://project-jwb9g.vercel.app` (the team domain `feastdaily-haydenprojects.vercel.app` is behind
+Vercel Authentication, which the app can't pass).
 
 ## Rules worth knowing
 
